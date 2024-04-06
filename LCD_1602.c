@@ -2,18 +2,22 @@
 
 void lcd_send_data(uint8_t data)
 {
-    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, (data & 0xf0) | BACKLIGHT | EN | RS, sizeof(data), 2);
-    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, (data & 0xf0) | BACKLIGHT | RS, sizeof(data), 2);
-    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, ((data << 4) & 0xf0) | BACKLIGHT | EN | RS, sizeof(data), 2);
-    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, ((data << 4) & 0xf0) | BACKLIGHT | RS, sizeof(data), 2);
+    uint8_t prepared_data[4];
+    prepared_data[0] = (data & 0xf0) | BACKLIGHT | EN | RS;
+    prepared_data[1] = (data & 0xf0) | BACKLIGHT;
+    prepared_data[2] = ((data << 4) & 0xf0) | BACKLIGHT | EN | RS;
+    prepared_data[3] = ((data << 4) & 0xf0) | BACKLIGHT;
+    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, prepared_data, sizeof(prepared_data), 2);
 }
 
 void lcd_send_command(uint8_t data)
 {
-    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, (data & 0xf0) | BACKLIGHT | EN, sizeof(data), 2);
-    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, (data & 0xf0) | BACKLIGHT, sizeof(data), 2);
-    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, ((data << 4) & 0xf0) | BACKLIGHT | EN, sizeof(data), 2);
-    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, ((data << 4) & 0xf0) | BACKLIGHT, sizeof(data), 2);
+    uint8_t prepared_data[4];
+    prepared_data[0] = (data & 0xf0) | BACKLIGHT | EN;
+    prepared_data[1] = (data & 0xf0) | BACKLIGHT;
+    prepared_data[2] = ((data << 4) & 0xf0) | BACKLIGHT | EN;
+    prepared_data[3] = ((data << 4) & 0xf0) | BACKLIGHT;
+    HAL_I2C_Master_Transmit(&LCD1602_HI2C, LCD1602_ADRESS, prepared_data, sizeof(prepared_data), 2);
 }
 
 void lcd_display_string(uint8_t row, uint8_t col, char *data)
